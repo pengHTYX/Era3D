@@ -2,11 +2,9 @@
 
 This is the official implementation of *Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention*.
 
-### [Project Page](https://penghtyx.github.io/Era3D_page/) | [Arxiv](https://arxiv.org/pdf/2405.11616) | [Weights](https://huggingface.co/pengHTYX/MacLab-Era3D-512-6view/tree/main) | <a href="https://huggingface.co/spaces/pengHTYX/Era3D_MV_demo"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Gradio%20Demo-Huggingface-orange"></a>
-<video width="700" height="360" controls>
-  <source src="assets/teaser.mp4" type="video/mp4">
-  您的浏览器不支持 video 标签。
-</video>
+### [Project Page](https://penghtyx.github.io/Era3D/) | [Arxiv](https://arxiv.org/pdf/2405.11616) | [Weights](https://huggingface.co/pengHTYX/MacLab-Era3D-512-6view/tree/main) | <a href="https://huggingface.co/spaces/pengHTYX/Era3D_MV_demo"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Gradio%20Demo-Huggingface-orange"></a>
+
+https://github.com/pengHTYX/Era3D/assets/38601831/5f927a1d-c6a9-44ef-92d0-563c26a2ce75
 
 ![Teaser](assets/teaser.jpg)
 
