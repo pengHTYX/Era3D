@@ -47,7 +47,7 @@ python test_mvdiffusion_unclip.py --config configs/test_unclip-512-6view.yaml \
 ``` 
 You can adjust the ```crop_size``` (400 or 420) and ```seed``` (42 or 600) to obtain best results for some cases. 
 
-2. Typically, we use ```rembg``` to predict alpha channel. If it has artifact, try to use [Clipdrop](https://github.com/xxlong0/Wonder3D?tab=readme-ov-file) to remove the background.
+2. Typically, we use ```rembg``` to predict alpha channel. If it has artifact, try to use [Clipdrop](https://clipdrop.co/remove-background) to remove the background.
 
 3. Instant-NSR Mesh Extraction
 ```
@@ -68,6 +68,8 @@ We collect code from following projects. We thanks for the contributions from th
 [Syncdreamer](https://github.com/liuyuan-pal/SyncDreamer)  
 [Instant-nsr-pl](https://github.com/bennyguo/instant-nsr-pl)  
 
+### License
+This project is under [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html), so any downstream solution and products that include our codes or the pretrained model inside it should be open-sourced to comply with the AGPL conditions. If you have any questions about the usage of Era3D, please feel free to contact us.
 
 ### Citation
 If you find this codebase useful, please consider cite our work.
