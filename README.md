@@ -8,6 +8,11 @@ https://github.com/pengHTYX/Era3D/assets/38601831/5f927a1d-c6a9-44ef-92d0-563c26
 
 ![Teaser](assets/teaser.jpg)
 
+### Create your digital portrait from single image
+
+https://github.com/pengHTYX/Era3D/assets/38601831/e663005c-f8df-485e-9047-285c46b3d602
+
+https://github.com/pengHTYX/Era3D/assets/38601831/1dbe75e6-f54a-4321-927d-3234d7568aab
 ### Installation
 ```
 conda create -n Era3D python=3.9
