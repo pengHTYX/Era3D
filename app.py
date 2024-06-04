@@ -180,7 +180,7 @@ def run_pipeline(pipeline, cfg, single_image, guidance_scale, steps, seed, crop_
     generator = torch.Generator(device=pipeline.unet.device).manual_seed(seed)
 
 
-    imgs_in = torch.stack([imgs_in]*2, dim=0)
+    imgs_in = torch.stack([batch['imgs_in']]*2, dim=0)
     num_views = imgs_in.shape[1]
     imgs_in = rearrange(imgs_in, "B Nv C H W -> (B Nv) C H W")# (B*Nv, 3, H, W)
     
