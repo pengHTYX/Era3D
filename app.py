@@ -50,10 +50,9 @@ _TITLE = '''Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise 
 _DESCRIPTION = '''
 <div>
 Generate consistent high-resolution multi-view normals maps and color images.
-<a style="display:inline-block; margin-left: .5em" href='https://github.com/pengHTYX/Era3D'></a>
 </div>
 <div>
-The demo does not include the mesh reconstruction part, please visit <a href="https://github.com/pengHTYX/Era3D">our github repo</a> to get a textured mesh.
+The demo does not include the mesh reconstruction part, please visit <a href="https://github.com/pengHTYX/Era3D"><img src='https://img.shields.io/github/stars/pengHTYX/Era3D?style=social' style="display: inline-block; vertical-align: middle;"/></a> to get a textured mesh.
 </div>
 '''
 _GPU_ID = 0
@@ -181,12 +180,12 @@ def run_pipeline(pipeline, cfg, single_image, guidance_scale, steps, seed, crop_
     generator = torch.Generator(device=pipeline.unet.device).manual_seed(seed)
 
 
-    imgs_in = torch.cat([batch['imgs_in']]*2, dim=0)
+    imgs_in = torch.stack([imgs_in]*2, dim=0)
     num_views = imgs_in.shape[1]
     imgs_in = rearrange(imgs_in, "B Nv C H W -> (B Nv) C H W")# (B*Nv, 3, H, W)
     
     normal_prompt_embeddings, clr_prompt_embeddings = batch['normal_prompt_embeddings'], batch['color_prompt_embeddings'] 
-    prompt_embeddings = torch.cat([normal_prompt_embeddings, clr_prompt_embeddings], dim=0)
+    prompt_embeddings = torch.stack([normal_prompt_embeddings, clr_prompt_embeddings], dim=0)
     prompt_embeddings = rearrange(prompt_embeddings, "B Nv N C -> (B Nv) N C")
     
     
@@ -232,7 +231,7 @@ def run_pipeline(pipeline, cfg, single_image, guidance_scale, steps, seed, crop_
     images_pred = [save_image(images_pred[i]) for i in range(bsz)]
     
     out = images_pred + normals_pred
-    return out
+    return images_pred, normals_pred
 
 
 def process_3d(mode, data_dir, guidance_scale, crop_size):
@@ -378,9 +377,9 @@ def run_demo():
                             steps_slider = gr.Slider(15, 100, value=40, step=1, label='Number of Diffusion Inference Steps')
                     with gr.Row():
                         with gr.Column():
-                            seed = gr.Number(600, label='Seed')
+                            seed = gr.Number(600, label='Seed', info='100 for digital portraits')
                         with gr.Column():
-                            crop_size = gr.Number(420, label='Crop size')
+                            crop_size = gr.Number(420, label='Crop size', info='380 for digital portraits')
 
                         mode = gr.Textbox('train', visible=False)
                         data_dir = gr.Textbox('outputs', visible=False)
@@ -391,28 +390,16 @@ def run_demo():
                 # gr.Markdown("<span style='color:red'>First click Generate button, then click Reconstruct button. Reconstruction may cost several minutes.</span>")
         
         with gr.Row():
-            view_1 = gr.Image(interactive=False, height=512, show_label=False)
-            view_2 = gr.Image(interactive=False, height=512, show_label=False)
-            view_3 = gr.Image(interactive=False, height=512, show_label=False)
-        with gr.Row():
-            view_4 = gr.Image(interactive=False, height=512, show_label=False)
-            view_5 = gr.Image(interactive=False, height=512, show_label=False)
-            view_6 = gr.Image(interactive=False, height=512, show_label=False)
-        with gr.Row():
-            normal_1 = gr.Image(interactive=False, height=512, show_label=False)
-            normal_2 = gr.Image(interactive=False, height=512, show_label=False)
-            normal_3 = gr.Image(interactive=False, height=512, show_label=False)
-        with gr.Row():
-            normal_4 = gr.Image(interactive=False, height=512, show_label=False)
-            normal_5 = gr.Image(interactive=False, height=512, show_label=False)
-            normal_6 = gr.Image(interactive=False, height=512, show_label=False)
+            view_gallery = gr.Gallery(label='Multiview Images')
+            normal_gallery = gr.Gallery(label='Multiview Normals')
+            
         print('Launching...')
         run_btn.click(
             fn=partial(preprocess, predictor), inputs=[input_image, input_processing], outputs=[processed_image_highres, processed_image], queue=True
         ).success(
             fn=partial(run_pipeline, pipeline, cfg),
             inputs=[processed_image_highres, scale_slider, steps_slider, seed, crop_size, output_processing],
-            outputs=[view_1, view_2, view_3, view_4, view_5, view_6, normal_1, normal_2, normal_3, normal_4, normal_5, normal_6],
+            outputs=[view_gallery, normal_gallery],
         )
         # recon_btn.click(
         #     process_3d, inputs=[mode, data_dir, scale_slider, crop_size], outputs=[obj_3d]
