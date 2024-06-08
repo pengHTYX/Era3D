@@ -29,7 +29,7 @@ pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/to
 pip install git+https://github.com/NVlabs/nvdiffrast
 
 # other depedency
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 ### Weights
