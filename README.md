@@ -36,7 +36,7 @@ pip install -r requirements.txt
 You can directly download the model from [huggingface](https://huggingface.co/spaces/pengHTYX/Era3D_MV_demo). You also can download the model in python script:
 ```
 from huggingface_hub import snapshot_download
-snapshot_download(repo_id="pengHTYX/MacLab-Era3D-512-6view")
+snapshot_download(repo_id="pengHTYX/MacLab-Era3D-512-6view", local_dir="./pengHTYX/MacLab-Era3D-512-6view/")
 ```
 
 ### Inference
