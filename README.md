@@ -44,7 +44,7 @@ snapshot_download(repo_id="pengHTYX/MacLab-Era3D-512-6view", local_dir="./pengHT
 ```
 python test_mvdiffusion_unclip.py --config configs/test_unclip-512-6view.yaml \
     pretrained_model_name_or_path='pengHTYX/MacLab-Era3D-512-6view' \
-    validation_dataset.crop_size='420' \
+    validation_dataset.crop_size=420 \
     validation_dataset.root_dir=examples \
     seed=600 \
     save_dir='mv_res'  \
