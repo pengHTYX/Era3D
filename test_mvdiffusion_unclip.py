@@ -84,7 +84,6 @@ def log_validation_joint(dataloader, pipeline, cfg: TestConfig,  save_dir):
     images_cond, pred_cat = [], defaultdict(list)
     for _, batch in tqdm(enumerate(dataloader)):
         images_cond.append(batch['imgs_in'][:, 0]) 
-        import pdb;pdb.set_trace()
         imgs_in = torch.cat([batch['imgs_in']]*2, dim=0)
         num_views = imgs_in.shape[1]
         imgs_in = rearrange(imgs_in, "B Nv C H W -> (B Nv) C H W")# (B*Nv, 3, H, W)
