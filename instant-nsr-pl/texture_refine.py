@@ -86,7 +86,6 @@ class ColorModel(nn.Module):
         self.f = f
         
     def forward(self):
-        import pdb;pdb.set_trace()
         rgba = self.renderer.render(self.v, self.f, colors=self.colors)
         mask = rgba[..., 3:]
         return rgba[..., :3] * mask + self.bg_color * (1 - mask)

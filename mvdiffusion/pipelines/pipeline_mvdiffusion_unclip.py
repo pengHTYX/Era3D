@@ -239,7 +239,7 @@ class StableUnCLIPImg2ImgPipeline(DiffusionPipeline):
             image_embeds = torch.cat([negative_prompt_embeds, normal_image_embeds, negative_prompt_embeds, color_image_embeds], 0)
             
         # _____________________________vae input latents__________________________________________________
-        image_pt = torch.stack([TF.to_tensor(img) for img in image_pil], dim=0).to(device)
+        image_pt = torch.stack([TF.to_tensor(img) for img in image_pil], dim=0).to(dtype=self.vae.dtype, device=device)
         image_pt = image_pt * 2.0 - 1.0
         image_latents = self.vae.encode(image_pt).latent_dist.mode() * self.vae.config.scaling_factor
         # Note: repeat differently from official pipelines     

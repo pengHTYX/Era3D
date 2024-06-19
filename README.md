@@ -65,6 +65,17 @@ bash run.sh 0 A_bulldog_with_a_black_pirate_hat_rgba  recon
 ```
 The textured mesh will be saved in $OUTPUT_DIR.
 
+### Gradio Demo for Multiview Generation
+1. Following previous work, we use the pretrained [SAM](https://github.com/facebookresearch/segment-anything?tab=readme-ov-file) to interactively remove background.
+```
+mkdir sam_pt && cd sam_pt
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+cd ..
+``` 
+2. Then, run local gradio demo.
+```
+python app.py
+```
 
 ### Related projects
 We collect code from following projects. We thanks for the contributions from the open-source community!     

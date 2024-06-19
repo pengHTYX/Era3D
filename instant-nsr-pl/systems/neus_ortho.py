@@ -283,7 +283,6 @@ class OrthoNeuSSystem(BaseSystem):
     """
     
     def validation_step(self, batch, batch_idx):
-        import pdb;pdb.set_trace()
         out = self(batch)
         psnr = self.criterions['psnr'](out['comp_rgb_full'].to(batch['rgb']), batch['rgb'])
         W, H = self.dataset.img_wh
