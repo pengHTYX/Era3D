@@ -12,10 +12,4 @@ MacLab-Era3D-512-6view/
 
 # data
 data_cleaning/
-data_lists/invalid/
-data_lists/correct_elevation_list.txt
-
-# training code
-mvdiffusion/data/dreamdata.py
-train_mvdiffusion_unit_unclip.py
-configs/unit-unclip-512-6view.yaml
+blender/container.sh

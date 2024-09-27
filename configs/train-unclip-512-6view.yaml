@@ -1,0 +1,122 @@
+pretrained_model_name_or_path: 'stabilityai/stable-diffusion-2-1-unclip'
+pretrained_unet_path: null 
+revision: null
+
+num_views: 6
+data_common: &data_common
+  root_dir: '/scratch/vgenfmod/lipeng/lvis_rendering_randomele_ortho/' # modify
+  predict_relative_views: [0, 2, 4, 8, 12, 14] 
+  num_validation_samples: 32
+  invalid_list: 
+    - 
+  img_wh: [512, 512]
+  exten: .png
+  prompt_embeds_path: mvdiffusion/data/fixed_prompt_embeds_6view
+  object_list: 
+    - data_lists/era3d_list.json
+train_dataset:
+  <<: *data_common
+  azi_interval: 22.5
+  random_views: 4 # 
+  bg_color: "three_choices"
+  validation: False
+  side_views_rate: 0.1
+validation_dataset:
+  prompt_embeds_path: ${data_common.prompt_embeds_path}
+  root_dir: '/scratch/vgenfmod/lipeng/wondersync/evaluate/validation' # modify
+  num_views: ${num_views}
+  bg_color: 'white'
+  img_wh:  ${data_common.img_wh} 
+  num_validation_samples: 1000
+  crop_size: 420
+validation_train_dataset:
+  <<: *data_common
+  azi_interval: 22.5
+  random_views: 4
+  bg_color: "white"
+  validation: False
+
+pred_type: 'joint'
+
+checkpoint_prefix: '.' # '../checkpoint_backup/'
+output_dir: output/unit-unclip-512-6view
+
+seed: 42
+train_batch_size: 4
+validation_batch_size: 2
+validation_train_batch_size: 2
+max_train_steps: 40000
+gradient_accumulation_steps: 2
+gradient_checkpointing: true
+learning_rate: 1e-4
+step_rules: "1:200000,0.5"
+scale_lr: false
+lr_scheduler: "piecewise_constant"
+lr_warmup_steps: 10
+snr_gamma: 5.0
+use_8bit_adam: false
+allow_tf32: true
+use_ema: true  
+dataloader_num_workers: 32
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_weight_decay: 1.e-2
+adam_epsilon: 1.e-08
+max_grad_norm: 1.0
+prediction_type: null
+vis_dir: vis
+logging_dir: logs
+mixed_precision: 'fp16' 
+report_to: 'wandb'
+local_rank: -1
+checkpointing_steps: 1250
+checkpoints_total_limit: 20
+resume_from_checkpoint: latest   # modify
+enable_xformers_memory_efficient_attention: true
+validation_steps: 1250
+validation_sanity_check: true
+tracker_project_name: 'rowwise' 
+
+trainable_modules: null 
+use_classifier_free_guidance: true 
+condition_drop_rate: 0.05
+drop_type: 'drop_as_a_whole'  # modify
+camera_embedding_lr_mult: 1.
+scale_input_latents: true
+
+pipe_kwargs:
+  num_views: ${num_views}
+validation_guidance_scales: [3.]
+pipe_validation_kwargs:
+  eta: 1.0
+validation_grid_nrow: ${num_views}
+
+regress_elevation: true
+regress_focal_length: true
+elevation_loss_weight: 1
+focal_loss_weight: 1
+plot_pose_acc: false
+unet_from_pretrained_kwargs:
+  unclip: true
+  num_views: ${num_views}
+  sample_size: 64 # for 512
+  zero_init_conv_in: True # modify
+  
+  regress_elevation: ${regress_elevation}
+  regress_focal_length: ${regress_focal_length}
+  num_regress_blocks: 3
+  camera_embedding_type: e_de_da_sincos
+  projection_camera_embeddings_input_dim: 4 # 2 for elevation and 2 for focal_length  
+  zero_init_camera_projection: True # modify
+
+  init_mvattn_with_selfattn: false
+
+  cd_attention_last: false
+  cd_attention_mid: false
+  multiview_attention: true
+  sparse_mv_attention: true
+  selfattn_block: self_rowwise 
+  mvcd_attention: true # modify
+
+  use_dino: false
+  addition_downsample: false

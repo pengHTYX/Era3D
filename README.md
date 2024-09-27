@@ -1,4 +1,4 @@
-## Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention
+## [NeurIPS2024] Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention
 
 This is the official implementation of *Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention*.
 
@@ -65,18 +65,38 @@ bash run.sh 0 A_bulldog_with_a_black_pirate_hat_rgba  recon
 ```
 The textured mesh will be saved in $OUTPUT_DIR.
 
-### Gradio Demo for Multiview Generation
-1. Following previous work, we use the pretrained [SAM](https://github.com/facebookresearch/segment-anything?tab=readme-ov-file) to interactively remove background.
+### Training
+The original [SD2.1-Unclip](https://huggingface.co/stabilityai/stable-diffusion-2-1-unclip/tree/main) base model employs a scaled linear noise scheduler during training. We modify it to linear scheduler for 512 training. Specifically, you can add this codesnap to  **/path/to/diffusers/schedulers/scheduling_utils.py: Class SchedulerMixin**.
 ```
-mkdir sam_pt && cd sam_pt
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
-cd ..
-``` 
-2. Then, run local gradio demo.
+@classmethod
+@validate_hf_hub_args
+def from_pretrained_linear(
+    cls,
+    pretrained_model_name_or_path: Optional[Union[str, os.PathLike]] = None,
+    subfolder: Optional[str] = None,
+    return_unused_kwargs=False,
+    **kwargs,
+):
+
+    config, kwargs, commit_hash = cls.load_config(
+        pretrained_model_name_or_path=pretrained_model_name_or_path,
+        subfolder=subfolder,
+        return_unused_kwargs=True,
+        return_commit_hash=True,
+        **kwargs,
+    )
+    config['beta_schedule'] = 'linear'
+    return cls.from_config(config, return_unused_kwargs=return_unused_kwargs, **kwargs)
 ```
-python app.py
+We strongly recommend using [wandb](https://wandb.ai/site) for logging, so you need export your personal key by 
+```
+export WANDB_API_KEY="$KEY$"
 ```
 
+Then, we begin training by 
+```
+accelerate launch --config_file node_config/8gpu.yaml train_mvdiffusion_unit_unclip.py --config configs/train-unclip-512-6view.yaml
+```
 ### Related projects
 We collect code from following projects. We thanks for the contributions from the open-source community!     
 [diffusers](https://github.com/huggingface/diffusers)  
