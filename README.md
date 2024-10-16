@@ -1,4 +1,4 @@
-## Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention
+## [NeurIPS2024] Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention
 
 This is the official implementation of *Era3D: High-Resolution Multiview Diffusion using Efficient Row-wise Attention*.
 
@@ -7,6 +7,9 @@ This is the official implementation of *Era3D: High-Resolution Multiview Diffusi
 https://github.com/pengHTYX/Era3D/assets/38601831/5f927a1d-c6a9-44ef-92d0-563c26a2ce75
 
 ![Teaser](assets/teaser.jpg)
+
+### 📝 Update
+- __[2024.10.16]__: 🔥 Release the [model](https://huggingface.co/pengHTYX/MacLab-Era3D-512-6view-ortho/tree/main) by removing the focal and elevation regression modules to ensure alignment between the input and generated front-view images for specific applications. See [Inference](#Inference).
 
 ### Create your digital portrait from single image
 
@@ -52,6 +55,17 @@ python test_mvdiffusion_unclip.py --config configs/test_unclip-512-6view.yaml \
 ``` 
 You can adjust the ```crop_size``` (400 or 420) and ```seed``` (42 or 600) to obtain best results for some cases. 
 
+If you want to keep the input and generated front view consistent, consider using the model trained only on orthogonal data. Please note that this model is only suitable for images with minimal perspective distortions.
+```
+python test_mvdiffusion_unclip.py --config configs/test_unclip-512-6view-ortho.yaml \
+    pretrained_model_name_or_path='pengHTYX/MacLab-Era3D-512-6view-ortho' \
+    validation_dataset.crop_size=420 \
+    validation_dataset.root_dir=examples \
+    seed=600 \
+    save_dir='mv_res'  \
+    save_mode='rgb'
+``` 
+
 2. Typically, we use ```rembg``` to predict alpha channel. If it has artifact, try to use [Clipdrop](https://clipdrop.co/remove-background) to remove the background.
 
 3. Instant-NSR Mesh Extraction
@@ -65,18 +79,16 @@ bash run.sh 0 A_bulldog_with_a_black_pirate_hat_rgba  recon
 ```
 The textured mesh will be saved in $OUTPUT_DIR.
 
-### Gradio Demo for Multiview Generation
-1. Following previous work, we use the pretrained [SAM](https://github.com/facebookresearch/segment-anything?tab=readme-ov-file) to interactively remove background.
+### Training
+We strongly recommend using [wandb](https://wandb.ai/site) for logging, so you need export your personal key by 
 ```
-mkdir sam_pt && cd sam_pt
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
-cd ..
-``` 
-2. Then, run local gradio demo.
-```
-python app.py
+export WANDB_API_KEY="$KEY$"
 ```
 
+Then, we begin training by 
+```
+accelerate launch --config_file node_config/8gpu.yaml train_mvdiffusion_unit_unclip.py --config configs/train-unclip-512-6view.yaml
+```
 ### Related projects
 We collect code from following projects. We thanks for the contributions from the open-source community!     
 [diffusers](https://github.com/huggingface/diffusers)  

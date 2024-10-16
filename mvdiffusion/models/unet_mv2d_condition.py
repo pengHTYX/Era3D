@@ -665,33 +665,7 @@ class UNetMV2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixi
             self.elevation_regressor = ResidualLiner(regress_in_dim, 1, 1280, act=None, num_block=num_regress_blocks)
         if regress_focal_length:
             self.focal_regressor = ResidualLiner(regress_in_dim, 1, 1280, act=None, num_block=num_regress_blocks)
-        '''
-        self.regress_elevation = regress_elevation
-        self.regress_focal_length = regress_focal_length
-        if regress_elevation and (not regress_focal_length):
-            print("Regressing elevation")
-            cam_dim = 1
-        elif regress_focal_length and (not regress_elevation):
-            print("Regressing focal length")
-            cam_dim = 6
-        elif regress_elevation and regress_focal_length:
-            print("Regressing both elevation and focal length")
-            cam_dim = 7
-        else:
-            cam_dim = 0
-        assert projection_camera_embeddings_input_dim == 2*cam_dim, "projection_camera_embeddings_input_dim should be 2*cam_dim"
-        if regress_elevation or regress_focal_length:
-            self.elevation_regressor = nn.ModuleList([
-                nn.Linear(block_out_channels[-1], 1280),
-                nn.SiLU(),
-                nn.Linear(1280, 1280),
-                nn.SiLU(),
-                nn.Linear(1280, cam_dim)
-            ])
-            self.pool = nn.AdaptiveAvgPool2d((1, 1))
-            self.focal_act = nn.Softmax(dim=-1)
-            self.camera_embedding = TimestepEmbedding(projection_camera_embeddings_input_dim, time_embed_dim=time_embed_dim) 
-        '''
+        
           
         # count how many layers upsample the images
         self.num_upsamplers = 0
@@ -1198,6 +1172,8 @@ class UNetMV2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixi
             emb = pose_embeds + emb_pre_act
             if self.time_embed_act is not None:
                 emb = self.time_embed_act(emb)
+        else:
+            pose_pred = None
             
         if is_controlnet:
             sample = sample + mid_block_additional_residual
