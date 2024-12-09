@@ -22,7 +22,7 @@ from icecream import ic
 steps = 200
 lr_clr = 2e-3
 scale = 1
-bg_color = np.array([1,1,1])
+bg_color = np.array([1,1,1], dtype=np.float32) #to prevent automatic float64 typecasting by numpy, ironing out the ambiguous declaration
 cam_path = './datasets/fixed_poses'
 views = ['front', 'front_right', 'right', 'back', 'left', 'front_left']
 view_nums = len(views)
